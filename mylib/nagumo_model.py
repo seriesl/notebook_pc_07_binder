@@ -7,9 +7,8 @@ class nagumo_model(object):
         self.d = d
         self.xmin = xmin 
         self.xmax = xmax
-        self.nx = nx
-        #self.nx = nx-2 
-        self.dx = (xmax-xmin)/(nx-1) 
+        self.nx = nx 
+        self.dx = (xmax-xmin)/(nx+1) 
  
     def fcn(self, t, y):
         k = self.k
@@ -89,9 +88,8 @@ class nagumo_model(object):
         x0 = -20.
 
         v = (1./np.sqrt(2.))*(np.sqrt(k*d))
-        cst  = -(1./np.sqrt(2.))*(np.sqrt(k/d));
+        cst  = -(1./np.sqrt(2.))*(np.sqrt(k/d))
 
-        ##x = np.linspace(xmin, xmax, nx)
         x = np.linspace(xmin+dx, xmax-dx, nx)
         y = np.exp(cst*(x-x0-v*t)) / (1. + np.exp(cst*(x-x0-v*t)))
         return y

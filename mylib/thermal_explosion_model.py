@@ -2,12 +2,12 @@ import numpy as np
 
 class thermal_explosion_model(object): 
  
-    def __init__(self, lamb, xmin, xmax, nx) : 
+    def __init__(self, lamb, xmin, xmax, nx):
         self.lamb = lamb
         self.xmin = xmin 
         self.xmax = xmax
-        self.nx = nx-2 
-        self.dx = (xmax-xmin)/(nx-1) 
+        self.nx = nx
+        self.dx = (xmax-xmin)/(nx+1) 
  
     def fcn(self, t, y):
         lamb = self.lamb
@@ -68,8 +68,8 @@ class fuel_thermal_explosion_model(object):
         self.eps = eps
         self.xmin = xmin
         self.xmax = xmax
-        self.nx = nx-2
-        self.dx = (xmax-xmin)/(nx-1)
+        self.nx = nx
+        self.dx = (xmax-xmin)/(nx+1)
 
     def fcn_radau(self, n, t, y, ydot, rpar, ipar):
         lamb = self.lamb
@@ -97,7 +97,6 @@ class fuel_thermal_explosion_model(object):
 
             ydot[irow]   = oneonlambdxdx*(theta_im1 -2*theta_i + theta_ip1) + np.exp(theta_i)*Y_i
             ydot[irow+1] = oneonlambdxdx*(Y_im1 -2*Y_i + Y_ip1) - eps * np.exp(theta_i)*Y_i
-
 
         theta_im1 = y[2*nx -4]
         Y_im1 = y[2*nx - 3]

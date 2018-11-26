@@ -15,7 +15,7 @@ class radau_result:
         self.nsol = nsol
 
 #############################################################################
-def radau5(tini, tend, yini, fcn, njac, rtol=1.e-6, atol=1.e-6, iout=0):
+def radau5(tini, tend, yini, fcn, njac, rtol=1.e-12, atol=1.e-12, iout=0):
 
     c_integration = ct.CDLL("./mylib/lib_radau_rock.so")
 
@@ -82,7 +82,7 @@ class rock_result:
         self.nstage = nstage
 
 #############################################################################
-def rock4(tini, tend, yini, fcn, tol=1.e-6):
+def rock4(tini, tend, yini, fcn, tol=1.e-9):
 
     c_integration = ct.CDLL("./mylib/lib_radau_rock.so")
 
@@ -113,24 +113,19 @@ def rock4(tini, tend, yini, fcn, tol=1.e-6):
     return rock_result(y, nfev, nstep, naccpt, nrejct, nfevrho, nstage)
 
 #############################################################################
-def strang(tini, tend, nt, yini, fcn_diff, fcn_reac):
+def strang(tini, tend, nt, yini, fcn_diff, fcn_reac, tol_diff=1.e-12, tol_reac=1.e-12):
 
     t = np.linspace(tini, tend, nt)
-    dt = (tend-tini) / (nt-1)
-    #nt-1 = (tend-tini) 
+    dt = (tend-tini)/(nt-1)
 
     ysol = yini 
 
     for it, ti in enumerate(t[:-1]):
-        #print(ti, ti+dt)
-        sol = radau5(ti, ti+dt/2, ysol, fcn_reac, 0)
+        sol = radau5(ti, ti+dt/2, ysol, fcn_reac, 0, rtol=tol_reac, atol=tol_reac)
         ysol = sol.y
-        ##print(np.linalg.norm(ysol))
-        ##sol = radau5(ti, ti+dt, ysol, fcn_diff, 1)
-        sol = rock4(ti, ti+dt, ysol, fcn_diff)
+        sol = rock4(ti, ti+dt, ysol, fcn_diff, tol=tol_diff)
         ysol = sol.y
-        sol = radau5(ti+dt/2, ti+dt, ysol, fcn_reac, 0)
+        sol = radau5(ti+dt/2, ti+dt, ysol, fcn_reac, 0, rtol=tol_reac, atol=tol_reac)
         ysol = sol.y
-        #print(np.linalg.norm(ysol))
 
     return ysol

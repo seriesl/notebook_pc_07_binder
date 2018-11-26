@@ -12,7 +12,7 @@ class turing_model(object):
         self.xmin = xmin
         self.xmax = xmax
         self.nx = nx
-        self.dx = (xmax-xmin)/(nx-1)
+        self.dx = (xmax-xmin)/(nx+1)
 
     def fcn_radau(self, n, t, y, ydot, rpar, ipar):
         a = self.a
